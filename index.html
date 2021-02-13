@@ -1,0 +1,112 @@
+<html>
+    <head>
+        <title>just a word</title>
+        <style>
+            body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            #outer {
+                height: 100%;
+                position: relative;
+                overflow: hidden;
+            }
+            #inner {
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 50%;
+                transform: translate(0, -50%);
+                text-align: center;
+                overflow: hidden;
+            }
+            #word {
+                display: inline-block;
+                font-family: sans-serif;
+                font-weight: bold;
+            }
+            #help {
+                padding: 30px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="outer">
+            <div id="inner">
+                <div id="word"></div>
+            </div>
+        </div>
+        <div id="help" style="display: none">
+            Add '#' and a word to the URL to get a page that's just a word.<br><br>
+            Examples:
+            <ul>
+                <li><a href="#YES">YES</a></li>
+                <li><a href="#🤔">🤔</a></li>
+                <li><a href="#Hello, my name is Inigo Montoya">Hello, my name is Inigo Montoya</a></li>
+            </ul>
+            <br>
+            The default is black-on-white.  You can invert the colors by adding `invert|` to the beginning.  For instance:
+            <ul>
+                <li><a href="#invert|Darkness">Darkness</a> (inverted)</li>
+            </ul>
+        </div>
+        <script src="textfill.min.js"></script>
+        <script>
+            var help = document.getElementById('help');
+            var outer = document.getElementById('outer');
+            var word = document.getElementById('word');
+            var str;
+            function resize() {
+                if (!str) {
+                    return;
+                }
+                let size = 10;
+                while (size < 2000) {
+                    size += 10;
+                    word.style.fontSize = size + 'px';
+                    if (word.offsetWidth > outer.offsetWidth || word.offsetHeight > outer.offsetHeight) {
+                        break;
+                    }
+                }
+                while (size > 10) {
+                    word.style.fontSize = size + 'px';
+                    if (word.offsetWidth < outer.offsetWidth && word.offsetHeight < outer.offsetHeight) {
+                        break;
+                    }
+                    size --;
+                }
+            }
+            function update() {
+                str = decodeURIComponent(window.location.hash.substring(1));
+                if (str) {
+                    if (str.indexOf('invert|') === 0) {
+                        outer.style.background = 'black';
+                        outer.style.color = 'white';
+                    } else {
+                        outer.style.background = '';
+                        outer.style.color = '';
+                    }
+                    const p = str.indexOf('|');
+                    if (p >= 0) {
+                        str = str.substring(p + 1);
+                    }
+                    if (str === word.innerText) {
+                        return;
+                    }
+                    outer.style.display = '';
+                    word.innerText = str;
+                    help.style.display = 'none';
+                    resize();
+                } else {
+                    word.innerText = '';
+                    outer.style.display = 'none';
+                    help.style.display = 'block';
+                }
+            }
+            window.addEventListener('hashchange', update);
+            window.addEventListener('resize', resize);
+            update();
+        </script>
+    </body>
+</html>
