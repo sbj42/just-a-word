@@ -53,7 +53,6 @@
             <br><br>
             <a href="https://github.com/sbj42/just-a-word">(source on github)</a>
         </div>
-        <script src="textfill.min.js"></script>
         <script>
             var help = document.getElementById('help');
             var outer = document.getElementById('outer');
@@ -63,7 +62,7 @@
                 if (!str) {
                     return;
                 }
-                let size = 10;
+                var size = 10;
                 while (size < 2000) {
                     size += 10;
                     word.style.fontSize = size + 'px';
